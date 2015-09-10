@@ -1,0 +1,89 @@
+CONSTANT VAR top10 = 4.99
+CONSTANT VAR new = 3.99
+CONSTANT VAR standard = 2.99
+VAR DVD
+VAR Money
+VAR ID
+
+OPENFILE dayin00.dat
+GET DVD
+GET Money
+CLOSEFILE dayin00.dat
+
+LABEL here:
+GET ID
+IF NOT(ID > 9999 AND ID < 100000) AND ID NOT(= 99959)
+	CALL RENT_RETURN
+ELSE IF ID = 99959
+	CALL ADMIN
+ELSE IF ID < 10000 OR > 99999
+	PRINT ID entered is invalid. Please try again.
+	GOTO here
+ENDIF
+
+RENT_RETURN
+	VAR Choice
+	PRINT Would you like to rent or return movies? (1=rent 2=return)
+	GET Choice
+	CASE Choice OF
+	1: CALL RENT
+	2: CALL RETURN
+	DEFAULT:
+		PRINT Please enter valid number.
+		CALL RENT_RETURN
+	ENDCASE
+END RENT_RETURN
+
+RENT
+	VAR Top10rentals
+	VAR Newrentals
+	VAR Standardrentals
+
+	PRINT How many Top 10 Movies would you like?
+	GET Top10rentals
+	PRINT How many New Movies would you like?
+	GET Newrentals
+	PRINT How many Standard Movies would you like?
+	GET Standardrentals
+	
+	
+
+END RENT
+
+RETURN
+	VAR returned
+	PRINT How many DVDs are you returning?
+	GET returned
+	DVD = DVD + returned
+	PRINT Thank you for returning your DVDs
+	GOTO here
+END RETURN
+
+ADMIN
+	LABEL there:
+	PRINT Press 1 for Summary, 2 for Withdrawal, 3 for Close Down.
+	CASE Choice OF
+		1: PRINT Current DVDs: "DVD" Current money: "Money"
+		2: CALL WITHDRAWAL
+		3: CALL CLOSE_DOWN
+		DEFAULT:
+			PRINT Please enter valid number.
+			GOTO there
+	ENDCASE
+END ADMIN
+
+WITHDRAWAL
+	VAR Withdraw
+	
+	PRINT How much would you like to take out?
+	GET Withdraw
+	Money = Money - Withdraw
+END WITHDRAW
+
+CLOSE_DOWN
+	OPENFILE dayout99.dat
+		PRINT DVD
+		PRINT Money
+	CLOSEFILE dayout99.dat
+	EXIT
+END CLOSE_DOWN
